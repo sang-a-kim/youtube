@@ -17,3 +17,21 @@ export const postEdit = (req, res) => {
 	const { title } = req.body;
 	return res.redirect(`../${id}`);
 };
+export const getUpload = (req, res) => {
+	return res.render("upload", { pageTitle: `Upload Video` });
+};
+export const postUpload = (req, res) => {
+	const { title, description, hashtags } = req.body;
+	const video = new Video({
+		title,
+		description,
+		createdAt: Date.now() ,
+		hashtag: hashtags.split(',').map(el => el.trim()).map(el => el[0] === '#' ? el : "#" + el), 
+		meta: {
+			views: 0,
+			rating: 0,
+		},
+	});
+	console.log(video)
+	return res.redirect("/");
+};
