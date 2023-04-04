@@ -20,18 +20,21 @@ export const postEdit = (req, res) => {
 export const getUpload = (req, res) => {
 	return res.render("upload", { pageTitle: `Upload Video` });
 };
-export const postUpload = (req, res) => {
+export const postUpload = async (req, res) => {
 	const { title, description, hashtags } = req.body;
-	const video = new Video({
+	try {
+		await Video.create({
 		title,
 		description,
-		createdAt: Date.now() ,
-		hashtag: hashtags.split(',').map(el => el.trim()).map(el => el[0] === '#' ? el : "#" + el), 
+		createdAt: "Date.now()",
+		hashtag: hashtags.split(',').map(el => el.trim()).map(el => el.startsWith('#') ? el : "#" + el), 
 		meta: {
 			views: 0,
 			rating: 0,
 		},
-	});
-	console.log(video)
+	})
+	} catch(e) {
+		console.log(e)
+	}
 	return res.redirect("/");
 };
