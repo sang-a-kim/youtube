@@ -6,6 +6,8 @@ block content
     input(
       name="title"
       placeholder="Video Title", 
-      value=`${video.title}`
+      value=video.title
     ) 
+    input(type="text", name="description", required, placeholder="Description" minlength=80 value=video.description)
+    input(type="text", name="hashtags", required, placeholder="Hashtags, separated by comma." value=video.hashtags.join(", "))
     input(value="Save ", type="submit")

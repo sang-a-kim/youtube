@@ -2,8 +2,6 @@ extends base.pug
 include mixins/video.pug
 
 block content
-  h3
-   a(href="/videos/upload") Upload
   ul
     each video in videos
       +videoInfo(video, 4000)
