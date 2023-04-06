@@ -4,7 +4,7 @@ include mixins/video.pug
 block content
   ul
     each video in videos
-      +videoInfo(video, 4000)
+      +videoInfo(video)
     else 
       li Sorry nothing found.
   
