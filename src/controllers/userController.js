@@ -41,7 +41,7 @@ export const postJoin = async (req, res) => {
 export const edit = (req, res) => res.send("Edit User");
 export const remove = (req, res) => res.send("Remove User");
 export const getLogin = (req, res) => {
-	return res.render("login", { pageTitle });
+	return res.render("login", { pageTitle: "Login" });
 };
 export const postLogin = async (req, res) => {
 	const pageTitle = 'Login'
@@ -62,7 +62,8 @@ export const postLogin = async (req, res) => {
 		});
 	}
 
-	console.log("LOG USER IN!")
+	req.session.loggedIn = true;
+	req.session.user = user;
 	res.redirect("/");
 };
 export const logout = (req, res) => res.send("Logout");
