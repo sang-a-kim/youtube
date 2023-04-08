@@ -1,4 +1,5 @@
 import User from "../models/User";
+import bcrypt from "bcrypt";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 export const postJoin = async (req, res) => {
@@ -40,18 +41,29 @@ export const postJoin = async (req, res) => {
 export const edit = (req, res) => res.send("Edit User");
 export const remove = (req, res) => res.send("Remove User");
 export const getLogin = (req, res) => {
-	return res.render("login", { pageTitle: "Login" });
+	return res.render("login", { pageTitle });
 };
 export const postLogin = async (req, res) => {
+	const pageTitle = 'Login'
 	const { username, password } = req.body;
-	const exists = await User.exists({ username });
-	if (!exists) {
+	const user = await User.findOne({ username });
+	if (!user) {
 		return res.status(400).render("login", {
-			pageTitle: "Login",
+			pageTitle,
 			errorMessage: "An account with this username does not exists.",
 		});
 	}
-	res.end();
+
+	const match = await bcrypt.compare(password, user.password);
+	if (!match){
+		return res.status(400).render("login", {
+			pageTitle,
+			errorMessage: "Password is not matched.",
+		});
+	}
+
+	console.log("LOG USER IN!")
+	res.redirect("/");
 };
 export const logout = (req, res) => res.send("Logout");
 export const see = (req, res) => res.send("See");
