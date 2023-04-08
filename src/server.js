@@ -18,8 +18,8 @@ app.use(express.urlencoded());
 app.use(
 	session({
 		secret: "Hello",
-		resave: true,
-		saveUnintialize: true,
+		resave: false,
+		saveUninitialized: false,
 		store: MongoStore.create({mongoUrl : "mongodb://127.0.0.1:27017/youtube"})
 	})
 );
