@@ -66,7 +66,10 @@ export const postLogin = async (req, res) => {
 	req.session.user = user;
 	res.redirect("/");
 };
-export const logout = (req, res) => res.send("Logout");
+export const logout = (req, res) => {
+	req.session.destroy();
+	return res.redirect("/")
+};
 export const see = (req, res) => res.send("See");
 export const startGithubLogin = (req, res) => {
 	const baseUrl = "https://github.com/login/oauth/authorize";
