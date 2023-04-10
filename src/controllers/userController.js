@@ -38,7 +38,15 @@ export const postJoin = async (req, res) => {
 		});
 	}
 };
-export const edit = (req, res) => res.send("Edit User");
+export const getEdit = (req, res) => {
+	return res.render("edit-profile", {
+		pageTitle: "Edit Profile",
+		user: req.session.user,
+	});
+};
+export const postEdit = (req, res) => {
+	return res.render("edit-profile", { pageTitle: "Edit Profile" });
+};
 export const remove = (req, res) => res.send("Remove User");
 export const getLogin = (req, res) => {
 	return res.render("login", { pageTitle: "Login" });
@@ -68,7 +76,7 @@ export const postLogin = async (req, res) => {
 };
 export const logout = (req, res) => {
 	req.session.destroy();
-	return res.redirect("/")
+	return res.redirect("/");
 };
 export const see = (req, res) => res.send("See");
 export const startGithubLogin = (req, res) => {
