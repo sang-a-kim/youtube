@@ -2,7 +2,7 @@ import Video from "../models/Video";
 
 export const home = async (req, res) => {
 	const videos = await Video.find({}, null, { sort: { createdAt: "desc" } });
-	return res.render("home", { pageTitle: "Home", videos });
+	return res.render("video/home", { pageTitle: "Home", videos });
 };
 
 export const watch = async (req, res) => {
@@ -11,7 +11,7 @@ export const watch = async (req, res) => {
 	if (!video) {
 		return res.status(404).render("404", { pageTitle: "Video not found" });
 	}
-	return res.render("watch", { pageTitle: video.title, video });
+	return res.render("video/watch", { pageTitle: video.title, video });
 };
 
 export const getEdit = async (req, res) => {
@@ -20,7 +20,7 @@ export const getEdit = async (req, res) => {
 	if (!video) {
 		return res.status(404).render("404", { pageTitle: "Video not found" });
 	}
-	return res.render("edit", { pageTitle: `Edit ${video.title}`, video });
+	return res.render("video/edit", { pageTitle: `Edit ${video.title}`, video });
 };
 
 export const postEdit = async (req, res) => {
@@ -39,7 +39,7 @@ export const postEdit = async (req, res) => {
 	return res.redirect(`../${id}`);
 };
 export const getUpload = (req, res) => {
-	return res.render("upload", { pageTitle: `Upload Video` });
+	return res.render("video/upload", { pageTitle: `Upload Video` });
 };
 export const postUpload = async (req, res) => {
 	const { title, description, hashtags } = req.body;
@@ -51,7 +51,7 @@ export const postUpload = async (req, res) => {
 		});
 		return res.redirect("/");
 	} catch (e) {
-		return res.status(400).render("upload", {
+		return res.status(400).render("video/upload", {
 			pageTitle: `Upload Video`,
 			errorMessage: e._message,
 		});
@@ -71,5 +71,5 @@ export const search = async (req, res) => {
 	if (keyword) {
 		videos = await Video.find({ title: new RegExp(keyword, 'ig') }, null, {sort: {createdAt: 'desc'}});
 	}
-	return res.render("search", { pageTitle: "search", videos });
+	return res.render("video/search", { pageTitle: "search", videos });
 };
