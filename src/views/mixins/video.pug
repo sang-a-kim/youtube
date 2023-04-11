@@ -2,6 +2,7 @@ mixin videoInfo(video)
       div   
           h4 
             a(href=`/videos/${video.id}`)=video.title
+          video(controls width="250" src=`${video.video}`)
           p=video.description
           ul  
             each hashtag in video.hashtags

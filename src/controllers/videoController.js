@@ -20,7 +20,10 @@ export const getEdit = async (req, res) => {
 	if (!video) {
 		return res.status(404).render("404", { pageTitle: "Video not found" });
 	}
-	return res.render("video/edit", { pageTitle: `Edit ${video.title}`, video });
+	return res.render("video/edit", {
+		pageTitle: `Edit ${video.title}`,
+		video,
+	});
 };
 
 export const postEdit = async (req, res) => {
@@ -42,12 +45,17 @@ export const getUpload = (req, res) => {
 	return res.render("video/upload", { pageTitle: `Upload Video` });
 };
 export const postUpload = async (req, res) => {
-	const { title, description, hashtags } = req.body;
+	const {
+		body: { title, description, hashtags },
+		file: { path },
+	} = req;
+
 	try {
 		await Video.create({
 			title,
 			description,
 			hashtags: Video.formatHashtags(hashtags),
+			video: path,
 		});
 		return res.redirect("/");
 	} catch (e) {
@@ -69,7 +77,9 @@ export const search = async (req, res) => {
 	const { keyword } = req.query;
 	let videos = [];
 	if (keyword) {
-		videos = await Video.find({ title: new RegExp(keyword, 'ig') }, null, {sort: {createdAt: 'desc'}});
+		videos = await Video.find({ title: new RegExp(keyword, "ig") }, null, {
+			sort: { createdAt: "desc" },
+		});
 	}
 	return res.render("video/search", { pageTitle: "search", videos });
 };

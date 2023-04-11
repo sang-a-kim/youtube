@@ -9,14 +9,15 @@ const videoSchema = new mongoose.Schema({
 		views: { type: Number, default: 0, required: true },
 		rating: { type: Number, default: 0, required: true },
 	},
+	video: { type: String, require: true },
 });
 
-videoSchema.static('formatHashtags', function(hashtags){
+videoSchema.static("formatHashtags", function (hashtags) {
 	return hashtags
 		.split(",")
 		.map((el) => el.trim())
-		.map((el) => (el.startsWith("#") ? el : "#" + el))
-})
+		.map((el) => (el.startsWith("#") ? el : "#" + el));
+});
 
 const Video = mongoose.model("Video", videoSchema);
 export default Video;
