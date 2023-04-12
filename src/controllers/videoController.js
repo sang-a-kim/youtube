@@ -8,6 +8,7 @@ export const home = async (req, res) => {
 export const watch = async (req, res) => {
 	const { id } = req.params;
 	const video = await Video.findById(id);
+
 	if (!video) {
 		return res.status(404).render("404", { pageTitle: "Video not found" });
 	}
@@ -48,6 +49,7 @@ export const postUpload = async (req, res) => {
 	const {
 		body: { title, description, hashtags },
 		file: { path },
+		session: { user: {username} },
 	} = req;
 
 	try {
@@ -56,6 +58,7 @@ export const postUpload = async (req, res) => {
 			description,
 			hashtags: Video.formatHashtags(hashtags),
 			video: path,
+			createdBy: username,
 		});
 		return res.redirect("/");
 	} catch (e) {
