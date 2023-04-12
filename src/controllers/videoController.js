@@ -1,3 +1,4 @@
+import User from "../models/User";
 import Video from "../models/Video";
 
 export const home = async (req, res) => {
@@ -49,17 +50,26 @@ export const postUpload = async (req, res) => {
 	const {
 		body: { title, description, hashtags },
 		file: { path },
-		session: { user: {username} },
+		session: {
+			user: { username, _id, videos },
+		},
 	} = req;
 
 	try {
-		await Video.create({
+		const newVideo = await Video.create({
 			title,
 			description,
 			hashtags: Video.formatHashtags(hashtags),
 			video: path,
 			createdBy: username,
 		});
+
+		console.log(req.session.user)
+
+		await User.findByIdAndUpdate(_id, {
+			videos: videos.length ? videos.push(newVideo) : [newVideo],
+		});
+
 		return res.redirect("/");
 	} catch (e) {
 		return res.status(400).render("video/upload", {
