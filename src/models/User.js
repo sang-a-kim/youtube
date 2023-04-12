@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
 import bcrypt from "bcrypt";
-import Video from './Video';
+import mongoose from "mongoose";
+
 
 const userSchema = new mongoose.Schema({
 	email: { type: String, required: true, unique: true },
@@ -10,11 +10,11 @@ const userSchema = new mongoose.Schema({
 	password: { type: String },
 	name: { type: String, required: true },
 	location: String,
-	videos: [{ type: mongoose.Types.ObjectId, ref: "Video" }],
 });
 
 userSchema.pre("save", async function () {
 	if (this.socialOnly) return;
+	if (!this.isModified("password")) return;
 	this.password = await bcrypt.hash(this.password, 5);
 });
 
