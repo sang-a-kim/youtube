@@ -1,5 +1,6 @@
 import User from "../models/User";
 import bcrypt from "bcrypt";
+import Video from "../models/Video";
 
 export const getJoin = (req, res) =>
 	res.render("user/join", { pageTitle: "Join" });
@@ -119,13 +120,17 @@ export const logout = (req, res) => {
 	req.session.destroy();
 	return res.redirect("/");
 };
-export const see = async (req, res) => {
+export const getProfile = async (req, res) => {
 	const { id } = req.params;
 	const user = await User.findById(id);
+
 	if (!user) {
 		return res.status(404).render("404", { pageTitle: "Video not found" });
 	}
-	return res.render("user/profile", { pageTitle: user.name, user });
+
+	const videos = await Video.find({ owner: id });
+
+	return res.render("user/profile", { pageTitle: user.name, user, videos });
 };
 export const startGithubLogin = (req, res) => {
 	const baseUrl = "https://github.com/login/oauth/authorize";
