@@ -2,13 +2,17 @@ extends ../base.pug
 
 block content
   video(controls width="1024" src=`../${video.video}`)
-  div
-    p=video.description
-    small=video.createdAt
-  div
-    small Uploaded by 
-     a(href=`/users/${video.owner._id}`) #{video.owner.username} 
-  if loggedInUser._id == video.owner.id
-    a(href=`${video.id}/edit`) Edit Video &rarr;
-    br
-    a(href=`${video.id}/delete`) Delete Video &rarr;
+  //-
+    div
+      p=video.description
+      small=video.createdAt
+    div
+      small Uploaded by 
+      a(href=`/users/${video.owner._id}`) #{video.owner.username} 
+    if loggedInUser._id == video.owner.id
+      a(href=`${video.id}/edit`) Edit Video &rarr;
+      br
+      a(href=`${video.id}/delete`) Delete Video &rarr;
+
+block scripts 
+  script(src="/assets/js/videoPlayer.js") 
