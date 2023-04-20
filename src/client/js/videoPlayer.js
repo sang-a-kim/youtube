@@ -7,8 +7,11 @@ const totalTime = document.getElementById("totalTime");
 const timeline = document.getElementById("timeline");
 const full = document.getElementById("full");
 const videoContainer = document.getElementById("videoContainer");
+const videoController = document.getElementById("videoController");
 
 let volumeValue = 0.5;
+
+let timeout = null;
 
 video.volume = volumeValue;
 
@@ -62,28 +65,59 @@ const handelLoadedMetadata = () => {
 
 const handelTimeUpdate = () => {
 	currentTime.innerText = formatTime(video.currentTime);
-	timeline.value = Math.floor(video.currentTime)
+	timeline.value = Math.floor(video.currentTime);
 };
 
 const handleTimeControl = () => {
-	video.currentTime = timeline.value
-	currentTime.innerText = formatTime(timeline.value)
-}
+	video.currentTime = timeline.value;
+	currentTime.innerText = formatTime(timeline.value);
+};
 
 const handleFullScreen = () => {
 	if (!document.fullscreenElement) {
-		videoContainer.requestFullscreen()
-		full.innerText = 'Exit Full'
-  } else {
-    document.exitFullscreen();
-		full.innerText = 'Full'
-  }
-}
+		videoContainer.requestFullscreen();
+		full.innerText = "Exit Full";
+	} else {
+		document.exitFullscreen();
+		full.innerText = "Full";
+	}
+};
+
+const handleVideoPlay = () => {
+	videoController.classList.add("showing");
+};
+
+const hideVideoController = () => {
+	timeout = setTimeout(() => {
+		if (video.paused) return;
+		videoController.classList.add("showing");
+		timeout = null;
+	}, 3000);
+};
+
+const handleMouseMove = () => {
+	videoController.classList.remove("showing");
+
+	if (timeout) {
+		clearTimeout(timeout);
+		timeout = null;
+	}
+
+	hideVideoController();
+};
+
+const handleMouseLeave = () => {
+	hideVideoController();
+};
 
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeChange);
 video.addEventListener("loadedmetadata", handelLoadedMetadata);
 video.addEventListener("timeupdate", handelTimeUpdate);
+video.addEventListener("play", handleVideoPlay);
+video.addEventListener("mousemove", handleMouseMove);
+video.addEventListener("mouseenter", handleMouseEnter);
+video.addEventListener("mouseleave", handleMouseLeave);
 timeline.addEventListener("input", handleTimeControl);
 full.addEventListener("click", handleFullScreen);

@@ -3,7 +3,7 @@ extends ../base.pug
 block content
   div#videoContainer
     video(width="1024" src=`../${video.video}`)
-    div   
+    div#videoController   
       button#play Play 
       button#mute Mute
       input(type="range", value="0.5", step="0.1", min="0", max="1")#volume
