@@ -1,7 +1,7 @@
 extends base
 
 block content
-    div#videoContainer
+    div#videoContainer(data-videoId = video._id)
         video(src=`../${video.video}`)
         div#videoControls.videoControls
             div.videoControls__play
