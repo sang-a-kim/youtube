@@ -3,38 +3,39 @@ const path = require("path");
 
 module.exports = {
 	entry: {
-    main: "./src/client/js/main.js",
-    videoPlayer: "./src/client/js/videoPlayer.js"
-  },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: "css/styles.css",
-    }),
-  ],
-  mode: 'development',
-  watch: true,
+		main: "./src/client/js/main.js",
+		videoPlayer: "./src/client/js/videoPlayer.js",
+		recorder: "./src/client/js/recorder.js",
+	},
+	plugins: [
+		new MiniCssExtractPlugin({
+			filename: "css/styles.css",
+		}),
+	],
+	mode: "development",
+	watch: true,
 	output: {
 		path: path.resolve(__dirname, "static"),
 		filename: "js/[name].js",
-    clean: true
+		clean: true,
 	},
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: [
-              ['@babel/preset-env', { targets: "defaults" }]
-            ]
-          }
-        }
-      },
-      {
-        test: /\.scss$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
-      }
-    ]
-  }
+	module: {
+		rules: [
+			{
+				test: /\.js$/,
+				use: {
+					loader: "babel-loader",
+					options: {
+						presets: [
+							["@babel/preset-env", { targets: "defaults" }],
+						],
+					},
+				},
+			},
+			{
+				test: /\.scss$/,
+				use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+			},
+		],
+	},
 };
