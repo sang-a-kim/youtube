@@ -6,13 +6,15 @@ module.exports = {
     main: "./src/client/js/main.js",
     videoPlayer: "./src/client/js/videoPlayer.js"
   },
-  plugins: [new MiniCssExtractPlugin({
-    filename: "css/main.css"
-  })],
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: "css/styles.css",
+    }),
+  ],
   mode: 'development',
   watch: true,
 	output: {
-		path: path.resolve(__dirname, "assets"),
+		path: path.resolve(__dirname, "static"),
 		filename: "js/[name].js",
     clean: true
 	},

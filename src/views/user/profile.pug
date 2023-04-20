@@ -1,8 +1,0 @@
-extends ../base
-include ../mixins/video
-
-block content
-  each video in videos 
-    +videoInfo(video)
-  else 
-    li sorry nothing found.

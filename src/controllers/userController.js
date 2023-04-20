@@ -2,14 +2,13 @@ import User from "../models/User";
 import bcrypt from "bcrypt";
 import Video from "../models/Video";
 
-export const getJoin = (req, res) =>
-	res.render("user/join", { pageTitle: "Join" });
+export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 export const postJoin = async (req, res) => {
 	const { name, email, username, password, password2, location } = req.body;
 	const pageTitle = "Join";
 
 	if (password !== password2) {
-		return res.status(400).render("user/join", {
+		return res.status(400).render("join", {
 			pageTitle,
 			errorMessage: "Password confirmation does not match",
 		});
@@ -19,7 +18,7 @@ export const postJoin = async (req, res) => {
 		$or: [{ username }, { email }],
 	});
 	if (exists) {
-		return res.status(400).render("user/join", {
+		return res.status(400).render("join", {
 			pageTitle,
 			errorMessage: "This username/email is already taken",
 		});
@@ -34,14 +33,14 @@ export const postJoin = async (req, res) => {
 		});
 		res.redirect("/");
 	} catch (e) {
-		return res.status(400).render("user/join", {
+		return res.status(400).render("join", {
 			pageTitle,
 			errorMessage: e._message,
 		});
 	}
 };
 export const getEdit = (req, res) => {
-	return res.render("user/edit-profile", {
+	return res.render("edit-profile", {
 		pageTitle: "Edit Profile",
 		user: req.session.user,
 	});
@@ -56,7 +55,7 @@ export const postEdit = async (req, res) => {
 	const existedUserName = await User.exists({ username });
 
 	if (user.username !== username && existedUserName) {
-		return res.status(400).render("user/edit-profile", {
+		return res.status(400).render("edit-profile", {
 			pageTitle: "Edit Profile",
 			errorMessage: "This username has already taken.",
 			user,
@@ -66,7 +65,7 @@ export const postEdit = async (req, res) => {
 	const existedEmail = await User.exists({ email });
 
 	if (user.email !== email && existedEmail) {
-		return res.status(400).render("user/edit-profile", {
+		return res.status(400).render("edit-profile", {
 			pageTitle: "Edit Profile",
 			errorMessage: "This email has already taken.",
 			user,
@@ -91,14 +90,14 @@ export const postEdit = async (req, res) => {
 };
 export const remove = (req, res) => res.send("Remove User");
 export const getLogin = (req, res) => {
-	return res.render("user/login", { pageTitle: "Login" });
+	return res.render("login", { pageTitle: "Login" });
 };
 export const postLogin = async (req, res) => {
 	const pageTitle = "Login";
 	const { username, password } = req.body;
 	const user = await User.findOne({ username, socialOnly: false });
 	if (!user) {
-		return res.status(400).render("user/login", {
+		return res.status(400).render("login", {
 			pageTitle,
 			errorMessage: "An account with this username does not exists.",
 		});
@@ -106,7 +105,7 @@ export const postLogin = async (req, res) => {
 
 	const match = await bcrypt.compare(password, user.password);
 	if (!match) {
-		return res.status(400).render("user/login", {
+		return res.status(400).render("login", {
 			pageTitle,
 			errorMessage: "Password is not matched.",
 		});
@@ -130,7 +129,7 @@ export const getProfile = async (req, res) => {
 
 	const videos = await Video.find({ owner: id });
 
-	return res.render("user/profile", { pageTitle: user.name, user, videos });
+	return res.render("users/profile", { pageTitle: user.name, user, videos });
 };
 export const startGithubLogin = (req, res) => {
 	const baseUrl = "https://github.com/login/oauth/authorize";
@@ -177,30 +176,14 @@ export const finishGithubLogin = async (req, res) => {
 			})
 		).json();
 
-		const emailData = await (
-			await fetch(`${apiUrl}/user/emails`, {
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${access_token}`,
-				},
-			})
-		).json();
 
-		const emailObj = emailData.find(
-			(email) => email.primary && email.verified
-		);
-
-		if (!emailObj) {
-			res.redirect("/login");
-		}
-
-		let user = await User.findOne({ email: emailObj.email });
+		let user = await User.findOne({ email: userData.email });
 
 		if (!user) {
 			user = await User.create({
 				name: userData.name,
 				username: userData.login,
-				email: emailObj.email,
+				email: userData.email,
 				avatarUrl: userData.avatar_url,
 				socialOnly: true,
 				location: userData.location,
@@ -218,7 +201,9 @@ export const getChangePassword = (req, res) => {
 	if (req.session.user.socialOnly) {
 		return res.redirect("/");
 	}
-	return res.render("user/change-password", { pageTitle: "Change Password" });
+	return res.render("users/change-password", {
+		pageTitle: "Change Password",
+	});
 };
 
 export const postChangePassword = async (req, res) => {
@@ -230,7 +215,7 @@ export const postChangePassword = async (req, res) => {
 	const pageTitle = "Change Password";
 
 	if (NewPassword !== NewPasswordConfirmation) {
-		return res.status(400).render("user/change-password", {
+		return res.status(400).render("users/change-password", {
 			pageTitle,
 			errorMessage: "The password does not match the confirmation",
 		});
@@ -238,7 +223,7 @@ export const postChangePassword = async (req, res) => {
 
 	const match = await bcrypt.compare(OldPassword, user.password);
 	if (!match) {
-		return res.status(400).render("user/change-password", {
+		return res.status(400).render("users/change-password", {
 			pageTitle,
 			errorMessage: "Password is not matched.",
 		});

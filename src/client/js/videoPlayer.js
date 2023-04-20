@@ -1,123 +1,111 @@
 const video = document.querySelector("video");
 const playBtn = document.getElementById("play");
+const playBtnIcon = playBtn.querySelector("i");
 const muteBtn = document.getElementById("mute");
+const muteBtnIcon = muteBtn.querySelector("i");
 const volumeRange = document.getElementById("volume");
-const currentTime = document.getElementById("currentTime");
+const currenTime = document.getElementById("currenTime");
 const totalTime = document.getElementById("totalTime");
 const timeline = document.getElementById("timeline");
-const full = document.getElementById("full");
+const fullScreenBtn = document.getElementById("fullScreen");
+const fullScreenIcon = fullScreenBtn.querySelector("i");
 const videoContainer = document.getElementById("videoContainer");
-const videoController = document.getElementById("videoController");
+const videoControls = document.getElementById("videoControls");
 
+let controlsTimeout = null;
+let controlsMovementTimeout = null;
 let volumeValue = 0.5;
-
-let timeout = null;
-
 video.volume = volumeValue;
 
 const handlePlayClick = (e) => {
-	if (video.paused) {
-		video.play();
-	} else {
-		video.pause();
-	}
-
-	playBtn.innerText = video.paused ? "Play" : "Pause";
+  if (video.paused) {
+    video.play();
+  } else {
+    video.pause();
+  }
+  playBtnIcon.classList = video.paused ? "fas fa-play" : "fas fa-pause";
 };
 
-const handleMute = () => {
-	if (video.muted) {
-		video.muted = false;
-	} else {
-		video.muted = true;
-	}
-
-	muteBtn.innerText = video.muted ? "Unmute" : "Mute";
-	volumeRange.value = video.muted ? 0 : volumeValue;
+const handleMuteClick = (e) => {
+  if (video.muted) {
+    video.muted = false;
+  } else {
+    video.muted = true;
+  }
+  muteBtnIcon.classList = video.muted
+    ? "fas fa-volume-mute"
+    : "fas fa-volume-up";
+  volumeRange.value = video.muted ? 0 : volumeValue;
 };
 
 const handleVolumeChange = (event) => {
-	const {
-		target: { value },
-	} = event;
-
-	if (video.muted) {
-		video.muted = false;
-		muteBtn.innerText = "Mute";
-	}
-
-	if (value == 0) {
-		video.muted = true;
-		muteBtn.innerText = "Unmute";
-	}
-
-	volumeValue = value;
-	video.volume = value;
+  const {
+    target: { value },
+  } = event;
+  if (video.muted) {
+    video.muted = false;
+    muteBtn.innerText = "Mute";
+  }
+  volumeValue = value;
+  video.volume = value;
 };
 
 const formatTime = (seconds) =>
-	new Date(Math.floor(seconds) * 1000).toISOString().slice(11, 19);
+  new Date(seconds * 1000).toISOString().substr(14, 5);
 
-const handelLoadedMetadata = () => {
-	totalTime.innerText = formatTime(video.duration);
-	timeline.max = Math.floor(video.duration);
+const handleLoadedMetadata = () => {
+  totalTime.innerText = formatTime(Math.floor(video.duration));
+  timeline.max = Math.floor(video.duration);
 };
 
-const handelTimeUpdate = () => {
-	currentTime.innerText = formatTime(video.currentTime);
-	timeline.value = Math.floor(video.currentTime);
+const handleTimeUpdate = () => {
+  currenTime.innerText = formatTime(Math.floor(video.currentTime));
+  timeline.value = Math.floor(video.currentTime);
 };
 
-const handleTimeControl = () => {
-	video.currentTime = timeline.value;
-	currentTime.innerText = formatTime(timeline.value);
+const handleTimelineChange = (event) => {
+  const {
+    target: { value },
+  } = event;
+  video.currentTime = value;
 };
 
-const handleFullScreen = () => {
-	if (!document.fullscreenElement) {
-		videoContainer.requestFullscreen();
-		full.innerText = "Exit Full";
-	} else {
-		document.exitFullscreen();
-		full.innerText = "Full";
-	}
+const handleFullscreen = () => {
+  const fullscreen = document.fullscreenElement;
+  if (fullscreen) {
+    document.exitFullscreen();
+    fullScreenIcon.classList = "fas fa-expand";
+  } else {
+    videoContainer.requestFullscreen();
+    fullScreenIcon.classList = "fas fa-compress";
+  }
 };
 
-const handleVideoPlay = () => {
-	videoController.classList.add("showing");
-};
-
-const hideVideoController = () => {
-	timeout = setTimeout(() => {
-		if (video.paused) return;
-		videoController.classList.add("showing");
-		timeout = null;
-	}, 3000);
-};
+const hideControls = () => videoControls.classList.remove("showing");
 
 const handleMouseMove = () => {
-	videoController.classList.remove("showing");
-
-	if (timeout) {
-		clearTimeout(timeout);
-		timeout = null;
-	}
-
-	hideVideoController();
+  if (controlsTimeout) {
+    clearTimeout(controlsTimeout);
+    controlsTimeout = null;
+  }
+  if (controlsMovementTimeout) {
+    clearTimeout(controlsMovementTimeout);
+    controlsMovementTimeout = null;
+  }
+  videoControls.classList.add("showing");
+  controlsMovementTimeout = setTimeout(hideControls, 3000);
 };
 
 const handleMouseLeave = () => {
-	hideVideoController();
+  controlsTimeout = setTimeout(hideControls, 3000);
 };
 
 playBtn.addEventListener("click", handlePlayClick);
-muteBtn.addEventListener("click", handleMute);
+muteBtn.addEventListener("click", handleMuteClick);
 volumeRange.addEventListener("input", handleVolumeChange);
-video.addEventListener("loadedmetadata", handelLoadedMetadata);
-video.addEventListener("timeupdate", handelTimeUpdate);
-video.addEventListener("play", handleVideoPlay);
-video.addEventListener("mousemove", handleMouseMove);
-video.addEventListener("mouseenter", handleMouseEnter);
-video.addEventListener("mouseleave", handleMouseLeave);
-timeline.addEventListener("input", handleTimeControl);
-full.addEventListener("click", handleFullScreen);
+video.addEventListener("loadeddata", handleLoadedMetadata);
+video.addEventListener("timeupdate", handleTimeUpdate);
+videoContainer.addEventListener("mousemove", handleMouseMove);
+videoContainer.addEventListener("mouseleave", handleMouseLeave);
+timeline.addEventListener("input", handleTimelineChange);
+fullScreenBtn.addEventListener("click", handleFullscreen);

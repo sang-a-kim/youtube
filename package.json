@@ -4,7 +4,7 @@
   "description": " The best way to  watch a videos",
   "scripts": {
     "dev:server": "nodemon",
-    "dev:assets": "webpack"
+    "dev:static": "webpack"
   },
   "repository": {
     "type": "git",
