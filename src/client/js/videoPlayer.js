@@ -4,6 +4,7 @@ const muteBtn = document.getElementById("mute");
 const volumeRange = document.getElementById("volume");
 const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
+const timeline = document.getElementById("timeline");
 
 let volumeValue = 0.5;
 
@@ -49,16 +50,27 @@ const handleVolumeChange = (event) => {
 	video.volume = value;
 };
 
+const formatTime = (seconds) =>
+	new Date(Math.floor(seconds) * 1000).toISOString().slice(11, 19);
+
 const handelLoadedMetadata = () => {
-	totalTime.innerText = Math.floor(video.duration);
+	totalTime.innerText = formatTime(video.duration);
+	timeline.max = Math.floor(video.duration);
 };
 
 const handelTimeUpdate = () => {
-	currentTime.innerText = Math.floor(video.currentTime);
+	currentTime.innerText = formatTime(video.currentTime);
+	timeline.value = Math.floor(video.currentTime)
 };
+
+const handleTimeControl = () => {
+	video.currentTime = timeline.value
+	currentTime.innerText = formatTime(timeline.value)
+}
 
 playBtn.addEventListener("click", handlePlayClick);
 muteBtn.addEventListener("click", handleMute);
 volumeRange.addEventListener("input", handleVolumeChange);
 video.addEventListener("loadedmetadata", handelLoadedMetadata);
 video.addEventListener("timeupdate", handelTimeUpdate);
+timeline.addEventListener("input", handleTimeControl);
