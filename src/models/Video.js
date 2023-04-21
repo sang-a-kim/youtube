@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import User from './User';
+import User from "./User";
 
 const videoSchema = new mongoose.Schema({
 	title: { type: String, required: true, trim: true, maxlength: 80 },
@@ -10,6 +10,9 @@ const videoSchema = new mongoose.Schema({
 		views: { type: Number, default: 0, required: true },
 	},
 	video: { type: String, required: true, default: [] },
+	comments: [
+		{ type: mongoose.Types.ObjectId, required: true, ref: "Comment" },
+	],
 	owner: { type: mongoose.Types.ObjectId, required: true, ref: "User" },
 });
 
