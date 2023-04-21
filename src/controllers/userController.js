@@ -199,6 +199,7 @@ export const finishGithubLogin = async (req, res) => {
 
 export const getChangePassword = (req, res) => {
 	if (req.session.user.socialOnly) {
+		req.flash("error", "Can't change password.")
 		return res.redirect("/");
 	}
 	return res.render("users/change-password", {
@@ -239,5 +240,6 @@ export const postChangePassword = async (req, res) => {
 	);
 
 	req.session.user = updatedUser;
+	req.flash("info", "Password updated")
 	return res.redirect("/");
 };

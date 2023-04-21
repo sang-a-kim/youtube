@@ -30,6 +30,7 @@ export const getEdit = async (req, res) => {
 	}
 
 	if (userId != video.owner) {
+		req.flash("error", "Not authorized");
 		return res.status(403).redirect("/");
 	}
 
@@ -64,6 +65,7 @@ export const postEdit = async (req, res) => {
 		hashtags: Video.formatHashtags(hashtags),
 	});
 
+	req.flash("success", "Changes saved.");
 	return res.redirect(`../${id}`);
 };
 
