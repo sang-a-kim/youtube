@@ -32,7 +32,7 @@ const onRecord = async () => {
 	preview.srcObject = stream;
 	preview.play();
 
-	mediaRecorder = new MediaRecorder(stream);
+	mediaRecorder = new MediaRecorder(stream, {mimeType: "video/webm; codecs=vp9"});
 	mediaRecorder.start();
 	recordingBtn.innerText = "stop";
 };
@@ -45,8 +45,7 @@ const onPause = () => {
 	preview.srcObject = null;
 
 	mediaRecorder.ondataavailable = (e) => {
-		const blob = new Blob([e.data], { type: "video/mp4" });
-		const videoURL = window.URL.createObjectURL(blob);
+		const videoURL = window.URL.createObjectURL(e.data);
 		srcURL = videoURL;
 		preview.src = videoURL;
 		preview.controls = true;
