@@ -177,16 +177,6 @@ export const createComment = async (req, res) => {
 			comments: [comment.id, ...video.comments],
 		});
 
-		const user = await User.findById(userId);
-
-		if (!user) {
-			return res.sendStatus(404);
-		}
-
-		await User.findByIdAndUpdate(userId, {
-			comments: [comment.id, ...user.comments],
-		});
-
 		return res.sendStatus(201);
 	} catch (e) {
 		console.log(e);
