@@ -80,7 +80,7 @@ export const getUpload = (req, res) => {
 export const postUpload = async (req, res) => {
 	const {
 		body: { title, description, hashtags },
-		file: { path },
+		file: { location },
 		session: {
 			user: { _id },
 		},
@@ -91,7 +91,7 @@ export const postUpload = async (req, res) => {
 			title,
 			description,
 			hashtags: Video.formatHashtags(hashtags),
-			video: path,
+			video: location,
 			owner: _id,
 		});
 

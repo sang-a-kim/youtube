@@ -2,7 +2,7 @@ extends base
 
 block content
     div#videoContainer(data-videoId = video._id)
-        video(src=`../${video.video}`)
+        video(src=video.video)
         div#videoControls.videoControls
             div.videoControls__play
                 span#play.videoControls__playBtn
